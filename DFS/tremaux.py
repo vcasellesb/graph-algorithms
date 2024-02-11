@@ -1,6 +1,5 @@
 import numpy as np
 
-
 ## we define a graph (i.e. an adjacency matrix)
 
 A = np.array([[0, 1, 0, 1],
@@ -107,4 +106,4 @@ def tremaux(A: np.ndarray, s: int):
 
     return path, E, F
 
-tremaux(A, 0)
+# tremaux(A, 0)
