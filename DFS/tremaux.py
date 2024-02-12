@@ -1,6 +1,7 @@
 from Graph import Graph, A
 import random
 import numpy as np
+import time
 
 
 class TremauxAlgorithm:
@@ -15,7 +16,6 @@ class TremauxAlgorithm:
             self.start = self.graph.get_node_from_label(start)
         else: self.start = start
 
-        
         self.n_step = 0
         self._current = self.start
 
@@ -71,9 +71,7 @@ class TremauxAlgorithm:
         # RULE is preserved (all have to be None)
         if all(v is None for v in self.state[next].values()):
             self.state[next][self._current.label] = 'F'
-        
-        print(self.state)
-        
+                
         self._current = self.graph.get_node_from_label(next)
         
         self.n_step += 1
@@ -83,8 +81,13 @@ class TremauxAlgorithm:
 
 
     def run(self):
-        for i in range(4):
+        while True:
+            print('\n**********************')
+            print('Taking next step...')
             self.step()
+
+            print(f'Moved to node {self._current.label}')
+            time.sleep(2)
         return self
     
 
