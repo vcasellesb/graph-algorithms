@@ -18,13 +18,16 @@ class TremauxAlgorithm:
 
         self.n_step = 0
         self._current = self.start
+        self.path = [self.start._toint()]
 
         self._initialize_node_passage_state()
     
     def _initialize_node_passage_state(self):
 
-        """Initializes the dictionary where we'll store the marks for our edges (or passages)"""
-
+        """
+        Initializes the dictionary where we'll 
+        store the marks for our edges (or passages)
+        """
         states = dict()
 
         for node in self.graph.nodes:
@@ -35,8 +38,10 @@ class TremauxAlgorithm:
         return self
     
     def decide(self, neighbors: dict) -> int:
-
-        """Neighbors is a dictionary with node labels as keys, states of nodes as values"""
+        """
+        Neighbors is a dictionary with node labels as keys, 
+        states of nodes as values
+        """
 
         empties = [k for k in neighbors.keys() if neighbors[k] is None]
 
@@ -48,8 +53,6 @@ class TremauxAlgorithm:
 
         if len(effed) >= 1: return random.choice(effed)
         else: raise Exception('It\'s done. All ')
-        
-
 
     def step(self):
         """
@@ -73,26 +76,26 @@ class TremauxAlgorithm:
             self.state[next][self._current.label] = 'F'
                 
         self._current = self.graph.get_node_from_label(next)
+        self.path.append(next)
         
         self.n_step += 1
 
         return self
     
-
-
     def run(self):
         while True:
-            print('\n**********************')
-            print('Taking next step...')
-            self.step()
-
-            print(f'Moved to node {self._current.label}')
-            time.sleep(2)
-        return self
-    
-
-
-
+            try:
+                print('\n**********************')
+                print('Taking next step...')
+                self.step()
+                print(f'Moved to node {self._current.label}')
+                time.sleep(2)
+            except Exception:
+                print('')
+                print(f'We should be done. The Walker took the following path: ')
+                print(f'{self.path}')
+                exit()
+        return
 
 if __name__ == "__main__":
     graph = Graph(A)
