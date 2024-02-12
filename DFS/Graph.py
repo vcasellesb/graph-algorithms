@@ -1,5 +1,5 @@
 import numpy as np
-from tremaux import A
+from typing import Set
 
 class Graph(object):
 
@@ -16,12 +16,22 @@ class Graph(object):
             self.nodes.append(v)
 
 
-    def _set_passages(self, A: np.ndarray, label: int):
+    def _set_passages(self, A: np.ndarray, label: int)-> Set:
 
         # we get the vertices this one is connected to
         conn = np.nonzero(A[label])[0]
 
-        return set(conn)       
+        return set(conn)
+
+    def get_node_from_label(self, label: int):
+        """Makes it easy to find nodes"""
+        
+        for node in self.nodes:
+            if node.label == label:
+                return node
+        
+        raise Exception('Node not found')
+
 
 
 
@@ -32,7 +42,10 @@ class Vertix(object):
         self._visited = False
         self.passages = passages 
         
-
+A = np.array([[0, 1, 0, 1],
+              [1, 0, 1, 1],
+              [0, 1, 0, 0],
+              [1, 1, 0, 0]])
 
 
 if __name__ == "__main__":

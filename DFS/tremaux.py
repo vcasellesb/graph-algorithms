@@ -1,109 +1,97 @@
+from Graph import Graph, A
+import random
 import numpy as np
 
-## we define a graph (i.e. an adjacency matrix)
 
-A = np.array([[0, 1, 0, 1],
-              [1, 0, 1, 1],
-              [0, 1, 0, 0],
-              [1, 1, 0, 0]])
+class TremauxAlgorithm:
 
+    def __init__(self, graph: Graph, start=None):
+        self._isDone = False
+        self.graph = graph
 
-def add_to_dict(dict, key, value):
+        if start is None:
+            self.start = random.choice(self.graph.nodes)
+        elif isinstance(start, int):
+            self.start = self.graph.get_node_from_label(start)
+        else: self.start = start
 
-    if dict.get(key) is not None:
-        dict[key].append(value)
-    else:
-        dict[key] = [value]
-    return
-
-def check_if_in_dict(dict, key, value):
-
-    """
-    Checks if a key-value pairing exists in dict.
-    """
-
-    if dict.get(key) is not None:
-        if value in dict.get(key):
-            return True
-        else:
-            return False
-    else:
-        return False
-    
-def marked_passages_in_v(E, F, v):
-    marked = 0  
-    if E.get(v) is not None:
-        marked += len(E.get(v))
-    if F.get(v) is not None:
-        marked += len(F.get(v))
-    return marked
-
-def choose_next_candidate(cand_list, v, E_dict):
-
-    if E_dict.get(v) is None:
-        return np.random.choice(cand_list)
-    
-    cand_not_seen = [c for c in cand_list if c not in E_dict.get(v)]
-    print(cand_not_seen)
-    return np.random.choice(cand_not_seen) if len(cand_not_seen)>1 else cand_not_seen[0]
-    
-
-def tremaux(A: np.ndarray, s: int):
-    """
-    This function implements Depth First Search as seen 
-    in Graph Algorithms, by Shimon Even.
-    
-    Parameters:
-        A (np.ndarray): Adjacency matrix.
-        s (int): starting vertix.
         
-    Returns:
-        TBD
-    """
+        self.n_step = 0
+        self._current = self.start
+
+        self._initialize_node_passage_state()
     
-    v = s
-    print(f'Starting in {v}')
-    E = dict() # E stores all paths from v visited
-    F = dict() # F stores all paths leading to v visited
+    def _initialize_node_passage_state(self):
 
-    # we get all the passages from v
-    cand = np.nonzero(A[v])[0]
+        """Initializes the dictionary where we'll store the marks for our edges (or passages)"""
 
-    umk_pas_v = len(cand)
+        states = dict()
 
-    path = list()
-    path.append(v)
-    while umk_pas_v > 0 or F.get(v) is not None:
-        cand = np.nonzero(A[v])[0]
-        cand_chosen = choose_next_candidate(cand, v, E) 
-        umk_pas_v = len(cand) - marked_passages_in_v(E, F, v)
-        print('******************************')
-        print(f'current v: {v}')
-        print(f'current candidates: {cand}')
-        print(f'Unmarked passages in v: {umk_pas_v}')
-        print(f'Path: {path}')
-        print(f'E dict: {E}')
-        print(f'F dict: {F}')
+        for node in self.graph.nodes:
+            states[node.label]=dict.fromkeys(node.passages)
+            
+        self.state = states
+        
+        return self
+    
+    def decide(self, neighbors: dict) -> int:
 
-        u = cand_chosen
-        print('u chosen', u)
-        if not check_if_in_dict(E, v, u):
-            add_to_dict(E, v, u)
-            print(f'E.get(u) is {E.get(u)}')
-            print(f'F.get(u) is {F.get(u)}')
-            if (E.get(u) is None and F.get(u) is None):
-                add_to_dict(F, u, v)
-                path.append(u)
-                print(f'Moving to {u}')
-                v=u
-            else:
-                add_to_dict(E, u, v)
-        else:
-            print(f'Moving to {u}')
-            path.append(u)
-            v = u
+        """Neighbors is a dictionary with node labels as keys, states of nodes as values"""
+
+        empties = [k for k in neighbors.keys() if neighbors[k] is None]
+
+        if len(empties) >= 1: return random.choice(empties)
+        
+        # if this runs then we have no empty passage.
+        # we apply the same logic as before
+        effed = [k for k in neighbors.keys() if neighbors[k] == "F"]
+
+        if len(effed) >= 1: return random.choice(effed)
+        else: raise Exception('It\'s done. All ')
+        
+
+
+    def step(self):
+        """
+        What should a step consist of?
+        We see the candidates (neighbouring nodes), we see their states.
+        We make a decision. I learn to code. Ha, ha.
+        We make a decision based on the state of each candidate.
+        RULE: The base of Tremaux's algorithm is to NEVER change a mark
+        """
+
+        neighbors = self._current.passages
+        state_of_neighbors = self.state[self._current.label]
+           
+        next = self.decide(state_of_neighbors)
+
+        # RULE is preserved
+        if self.state[self._current.label][next] is None:
+            self.state[self._current.label][next] = 'E'
+        # RULE is preserved (all have to be None)
+        if all(v is None for v in self.state[next].values()):
+            self.state[next][self._current.label] = 'F'
+        
+        print(self.state)
+        
+        self._current = self.graph.get_node_from_label(next)
+        
+        self.n_step += 1
+
+        return self
     
 
-    return path, E, F
 
-# tremaux(A, 0)
+    def run(self):
+        for i in range(4):
+            self.step()
+        return self
+    
+
+
+
+
+if __name__ == "__main__":
+    graph = Graph(A)
+    tr = TremauxAlgorithm(graph, start=0)
+    tr.run()
