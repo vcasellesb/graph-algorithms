@@ -11,7 +11,7 @@ class Graph(object):
         self.nodes = list()
         for n in range(len(A[0])):
             passages = self._set_passages(A=A, label=n)
-            v = Vertix(label=n, passages=passages)
+            v = Vertex(label=n, passages=passages)
             self.nodes.append(v)
 
     def _set_passages(self, A: np.ndarray, label: int) -> Set:
@@ -30,7 +30,7 @@ class Graph(object):
         
         raise Exception('Node not found')
 
-class Vertix(object):
+class Vertex(object):
 
     def __init__(self, label: int, passages: set):
         self.label = label

@@ -52,7 +52,7 @@ class TremauxAlgorithm:
         effed = [k for k in neighbors.keys() if neighbors[k] == "F"]
 
         if len(effed) >= 1: return random.choice(effed)
-        else: raise Exception('It\'s done. All ')
+        else: raise Exception
 
     def step(self):
         """
@@ -91,11 +91,10 @@ class TremauxAlgorithm:
                 print(f'Moved to node {self._current.label}')
                 time.sleep(2)
             except Exception:
-                print('')
+                print('************************')
                 print(f'We should be done. The Walker took the following path: ')
                 print(f'{self.path}')
                 exit()
-        return
 
 if __name__ == "__main__":
     graph = Graph(A)
