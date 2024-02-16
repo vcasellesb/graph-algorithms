@@ -52,7 +52,7 @@ class TremauxAlgorithm:
         effed = [k for k in neighbors.keys() if neighbors[k] == "F"]
 
         if len(effed) >= 1: return random.choice(effed)
-        else: raise Exception
+        else: return None
 
     def step(self):
         """
@@ -67,6 +67,10 @@ class TremauxAlgorithm:
         state_of_neighbors = self.state[self._current.label]
            
         next = self.decide(state_of_neighbors)
+
+        if next is None:
+            self._isDone = True
+            return
 
         # RULE is preserved
         if self.state[self._current.label][next] is None:
@@ -83,20 +87,20 @@ class TremauxAlgorithm:
         return self
     
     def run(self):
-        while True:
-            try:
-                print('\n**********************')
-                print('Taking next step...')
-                self.step()
-                print(f'Moved to node {self._current.label}')
-                time.sleep(2)
-            except Exception:
-                print('************************')
-                print(f'We should be done. The Walker took the following path: ')
-                print(f'{self.path}')
-                exit()
+        while not self._isDone:
+            print('\n**********************')
+            print('Taking next step...')
+            self.step()
+            print(f'Moved to node {self._current.label}')
+            time.sleep(2)
+        print('************************')
+        print(f'We should be done. The Walker took the following path: ')
+        print(f'{self.path}')
 
 if __name__ == "__main__":
-    graph = Graph(A)
-    tr = TremauxAlgorithm(graph, start=0)
-    tr.run()
+    testfile = np.load('DFS/tests/tests.npz')
+    for ar in testfile.files:
+        A = testfile[ar]
+        graph = Graph(A)
+        tr = TremauxAlgorithm(graph)
+        tr.run()
