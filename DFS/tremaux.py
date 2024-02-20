@@ -2,11 +2,13 @@ from Graph import Graph, A
 import random
 import numpy as np
 import time
+from typing import Union
 
 
 class TremauxAlgorithm:
 
-    def __init__(self, graph: Graph, start=None):
+
+    def __init__(self, graph: Graph, start=None, DELAY:int=1):
         self._isDone = False
         self.graph = graph
 
@@ -19,6 +21,8 @@ class TremauxAlgorithm:
         self.n_step = 0
         self._current = self.start
         self.path = [self.start._toint()]
+
+        self.DELAY = DELAY
 
         self._initialize_node_passage_state()
     
@@ -37,7 +41,7 @@ class TremauxAlgorithm:
         
         return self
     
-    def decide(self, neighbors: dict) -> int:
+    def decide(self, neighbors: dict) -> Union[int, None]:
         """
         Neighbors is a dictionary with node labels as keys, 
         states of nodes as values
@@ -92,7 +96,8 @@ class TremauxAlgorithm:
             print('Taking next step...')
             self.step()
             print(f'Moved to node {self._current.label}')
-            time.sleep(2)
+            if self.DELAY is not None:
+                time.sleep(self.DELAY)
         print('************************')
         print(f'We should be done. The Walker took the following path: ')
         print(f'{self.path}')
