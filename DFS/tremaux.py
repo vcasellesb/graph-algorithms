@@ -1,12 +1,10 @@
-from Graph import Graph, A
+from Graph import Graph
 import random
 import numpy as np
 import time
 from typing import Union
 
-
 class TremauxAlgorithm:
-
 
     def __init__(self, graph: Graph, start=None, DELAY:int=1):
         self._isDone = False
@@ -75,7 +73,6 @@ class TremauxAlgorithm:
         if next is None:
             self._isDone = True
             return
-
         # RULE is preserved
         if self.state[self._current.label][next] is None:
             self.state[self._current.label][next] = 'E'
@@ -92,18 +89,19 @@ class TremauxAlgorithm:
     
     def run(self):
         while not self._isDone:
-            print('\n**********************')
-            print('Taking next step...')
-            self.step()
-            print(f'Moved to node {self._current.label}')
+            if self.step() is not None:
+                print('\n**********************')
+                print('Taking next step...')
+                print(f'Moved to node {self._current.label}')
             if self.DELAY is not None:
                 time.sleep(self.DELAY)
-        print('************************')
-        print(f'We should be done. The Walker took the following path: ')
-        print(f'{self.path}')
+        print('\n************************')
+        print(f'\nWe should be done. The Walker took the following path: \n')
+        print(f'{" -> ".join([str(n) for n in self.path])}')
+        print('\nSee ya')
 
 if __name__ == "__main__":
-    testfile = np.load('DFS/tests/tests.npz')
+    testfile = np.load('tests/tests.npz')
     for ar in testfile.files:
         A = testfile[ar]
         graph = Graph(A)

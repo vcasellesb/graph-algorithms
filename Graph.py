@@ -1,7 +1,26 @@
 import numpy as np
 from typing import Set
 
+########################################
+# Here, I'll store the base Graph class
+########################################
+
+class Vertex(object):
+
+    def __init__(self, label: int, passages: set):
+        self.label = label
+        self._visited = False ## This should be specified when initializing each walker. Bad puppy, Vicent
+        self.passages = passages # this is called passages but it may as well be called neighbours. Tomato, tomatoe
+    
+    def __str__(self):
+        return f'{self.label}'
+    
+    def _toint(self):
+        return self.label
+
 class Graph(object):
+
+    # TODO: Uncouple Graph and Vertex from Tremaux Walker
 
     def __init__(self, A: np.ndarray):
         # Adjacency matrix (should be square matrix)
@@ -21,7 +40,7 @@ class Graph(object):
 
         return set(conn)
 
-    def get_node_from_label(self, label: int):
+    def get_node_from_label(self, label: int) -> Vertex:
         """Makes it easy to find nodes"""
 
         for node in self.nodes:
@@ -29,19 +48,6 @@ class Graph(object):
                 return node
         
         raise Exception('Node not found')
-
-class Vertex(object):
-
-    def __init__(self, label: int, passages: set):
-        self.label = label
-        self._visited = False
-        self.passages = passages 
-    
-    def __str__(self):
-        return f'{self.label}'
-    
-    def _toint(self):
-        return self.label
         
 A = np.array([[0, 1, 0, 1],
               [1, 0, 1, 1],
