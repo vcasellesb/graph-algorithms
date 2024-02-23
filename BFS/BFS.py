@@ -1,8 +1,9 @@
 from math import inf
 from Graph import Graph, Vertex
-from typing import Tuple
+from typing import Tuple, Union
 from collections import deque
 import numpy as np
+from utils.helpers import help_start
 
 
 ##########################
@@ -57,7 +58,7 @@ class naiveBFS:
         self._distances[lab] = 0
         self._paths[lab] = 1
 
-    def run(self, graph: Graph, source: Vertex, dest: Vertex):
+    def run(self, graph: Graph, source: Union[int, Vertex], dest: Vertex):
 
         """
         TODO: SOLVE HOW SOURCE AND DEST ARE GIVEN
@@ -65,6 +66,7 @@ class naiveBFS:
 
         self._distances, self._paths = self._initialize_ds_ps(graph)
 
+        source = help_start(start=source, graph=graph, allowNone=False)
         self.start(source=source)
 
         while len(self._queue) > 0:
@@ -101,6 +103,6 @@ if __name__ == "__main__":
         A = testfile[ar]
         graph = Graph(A)
         bfs = naiveBFS()        
-        results = bfs.run(graph, source=graph.get_node_from_label(0), dest=graph.get_node_from_label(3))
+        results = bfs.run(graph, source=0, dest=graph.get_node_from_label(3))
         print(results)
             
