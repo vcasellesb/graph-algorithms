@@ -24,9 +24,6 @@ class naiveBFS:
     # or when calling the run() method?
     def __init__(self):
 
-        # we init the distances and paths arrays
-        # MOVED TO RUN
-
         # queue where we'll store the nodes
         self._queue = deque()
 
@@ -55,6 +52,7 @@ class naiveBFS:
         self._queue.append(source)
 
         lab = source._toint()
+        source._visited = True
         self._distances[lab] = 0
         self._paths[lab] = 1
 
@@ -91,7 +89,6 @@ class naiveBFS:
                     self._distances.get(current._toint()) + 1:
 
                     self._paths[neigh._toint()] += self._paths[current._toint()]
-
         
         return self._paths[dest._toint()]
 
