@@ -56,15 +56,16 @@ class naiveBFS:
         self._distances[lab] = 0
         self._paths[lab] = 1
 
-    def run(self, graph: Graph, source: Union[int, Vertex], dest: Vertex):
+    def run(self, graph: Graph, source: Union[int, Vertex], dest: Union[int, Vertex]) -> int:
 
         """
-        TODO: SOLVE HOW SOURCE AND DEST ARE GIVEN
+        TODO: SOLVE HOW SOURCE AND DEST ARE GIVEN (DONE)
         """
 
         self._distances, self._paths = self._initialize_ds_ps(graph)
 
         source = help_start(start=source, graph=graph, allowNone=False)
+        dest = help_start(start=dest, graph=graph, allowNone=False)
         self.start(source=source)
 
         while len(self._queue) > 0:
@@ -100,6 +101,6 @@ if __name__ == "__main__":
         A = testfile[ar]
         graph = Graph(A)
         bfs = naiveBFS()        
-        results = bfs.run(graph, source=0, dest=graph.get_node_from_label(3))
+        results = bfs.run(graph, source=3, dest=1)
         print(results)
             

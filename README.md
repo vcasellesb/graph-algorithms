@@ -2,7 +2,9 @@
 
 I really like graphs. They have a soothing quality to them that I enjoy. They are self-contained, they are chill. They are cool. However, I know very little about them. I wanna change that. So I'm gonna try and implement some algorithms walking through them.
 
-This repo is inspired by the book Graph Algorithms, by Shimon Even. The code, I'd love to be able to say that it was all from my tiny brain, but it is not. My main inspiration is `https://github.com/illiterati1/python_maze/`, where the author implements what the *Tremaux* algorithm (the first one I've tried to implement) for the purpose it's best known for, which is maze solving. Anyways, I've gotten some ideas about how to structure the code from there, so feel free to check it out.
+This repo is inspired by the books Graph Algorithms, by Shimon Even, and Network Science, by Albert Laszlo-Barabasi. I'm currently walking through both, searching info on graphs and trying to implement the algorithms that are usually used on them. I'll try to be as organized as possible, but I'm pretty chaotic, so yeah.
+
+The code for the "Walkers", I'd love to be able to say that it was all from my tiny brain, but it is not. My main inspiration is `https://github.com/illiterati1/python_maze/`, where the author implements what the *Tremaux* algorithm (the first one I've tried to implement) for the purpose it's best known for, which is maze solving. Anyways, I've gotten some ideas about how to structure the code from there, so feel free to check it out.
 
 Currently, all algorithms implemented are for unweighted, undirected graphs. In the future I'll implement weighted graphs.
 
