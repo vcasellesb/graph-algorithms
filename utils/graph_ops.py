@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List, Tuple
 import numpy as np
 
 # This is just me playing around with the homework for Chapter two of Albert Laszlo-Barabasi's book on network science
@@ -76,10 +76,81 @@ def extract_triang(A: np.ndarray) -> int:
 
     return int(np.trace(A.dot(A.dot(A))) / 6)
 
+def A_to_link_list(A: np.ndarray) -> List[Tuple[int]]:
+    """
+    I think the main difficulty of this problem is how to codify the link list. I've tried
+    using a set of sets, but Python doesn't allow unhashable types in sets.
+    Scouring the internet, I've found that networkX uses tuples to store links.
+    But how should we deal with undirected links? Just store one (since the other link is esentially the same)?
+    """
+    arr1, arr2 = np.nonzero(A)
+    # we check if there's any node with no links
+    uniq = len(np.unique(arr1))
+    which = None
+    if uniq != A.shape[0]:
+        which = set(np.unique(np.where(~A.any(axis=1))))
+
+    l = [(i, j) for i, j in zip(arr1, arr2)]
+    if which:
+        for s in which:
+            l.append((s, None))
+    return l
+
+def link_list_to_A(link_list: List[Tuple[int]]) -> np.ndarray:
+    """
+    We assume that all nodes have links. Otherwise, they won't be included
+    in the adj matrix.
+    TODO: Handle missing nodes.
+    """
+    dim1 = dim2 = len(np.unique([i[0] for i in link_list]))
+    A = np.zeros((dim1, dim2))
+    for t in link_list:
+        s, d = t
+        if d is None:
+            A[s] = np.zeros((dim1,))
+            continue
+        A[s, d] = 1       
+    return A
+
+def clust_coef(A: np.ndarray) -> float:
+    """
+    What do we need here? The clustering coefficient is the number of links
+    between the neighbors of node i divided by k_i * (k_i - 1) where k_i is the degree
+    of node i.
+
+    k_i is easy to get. Refer to extract_degree_vec. 
+    The difficult part is getting the links between neighbors of node i
+
+    TODO: Fix this BS
+    """
+    l_of_ls = list()
+
+    ## This is the ugliest thing I've ever seen. And I have mirrors in my house. FIX!!!!!!!
+    for node_i in A[0]:
+        l = 0
+        neigh = set(np.nonzero(A[node_i])[0])
+        for n in neigh:
+            neigh_of_neigh = set(np.nonzero(A[n])[0])
+            for n_n in neigh_of_neigh:
+                if n_n in neigh and n_n != node_i:
+                    l += 1
+
+        l_of_ls.append(l)
+
+    
+    l = np.array(l_of_ls)
+    k_i = extract_degree_vec(A)
+    denom = (k_i*(k_i-1))
+    return np.divide(l, denom, out=np.zeros_like(l, dtype=float), where=denom!=0)
+    
+
 if __name__ == "__main__":
     testfile = np.load('tests/tests.npz')
     for i, ar in enumerate(testfile.files):
         A = testfile[ar]
+
+        print(clust_coef(A))
+        continue
         n = 2
         if n and n<2:
             message = 'of neighbor of node i'
